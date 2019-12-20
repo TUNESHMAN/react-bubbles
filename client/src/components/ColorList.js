@@ -53,7 +53,17 @@ const ColorList = ({ colors, updateColors }) => {
 
   const deleteColor = color => {
     // make a delete request to delete this color
-    
+    WithAuth()
+    .delete(`http://localhost:5000/api/colors/${color.id}`)
+    .then(res => {
+      const id = res.data;
+      const newColors = colors.filter(el => el.id !== id);
+      updateColors(newColors);
+    })
+    .catch(err => {
+      alert(err);
+    });
+
   };
 
   return (
