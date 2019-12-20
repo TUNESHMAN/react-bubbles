@@ -10,7 +10,7 @@ const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
-
+  const [addNew, setAddNew] = useState(false);
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
@@ -21,10 +21,39 @@ const ColorList = ({ colors, updateColors }) => {
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    const request = addNew ? WithAuth().post : WithAuth().put;
+    const url = addNew
+      ? "http://localhost:5000/api/colors"
+      : `http://localhost:5000/api/colors/${colorToEdit.id}`;
+    request(url, colorToEdit)
+      .then(res => {
+        if (addNew) {
+          updateColors(res.data);
+          setAddNew(false);
+        } else if (editing) {
+          const newColor = res.data;
+          const index = colors.findIndex(el => el.id === newColor.id);
+          const copyOfColors = [...colors];
+          copyOfColors[index] = newColor;
+          updateColors(copyOfColors);
+        }
+        setAddNew(false);
+        setEditing(false);
+        setColorToEdit(initialColor);
+      })
+
+      .catch(error => {
+        console.log(error);
+      });
   };
+
+  setAddNew(false);
+  setEditing(false);
+  setColorToEdit(initialColor);
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    
   };
 
   return (
@@ -34,12 +63,14 @@ const ColorList = ({ colors, updateColors }) => {
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+              <span
+                className="delete"
+                onClick={e => {
+                  e.stopPropagation();
+                  deleteColor(color);
+                }}
+              >
+                x
               </span>{" "}
               {color.color}
             </span>
