@@ -12,7 +12,7 @@ const Login = (props) => {
   // };
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
-  const submit = ()=>{
+  const onSubmit = ()=>{
     axios.post('http://localhost:5000/api/login',{
       username: usernameRef.current.value,
       password: passwordRef.current.value,
@@ -35,27 +35,16 @@ const Login = (props) => {
   return (
     <>
       <h1>Welcome to the Bubble App!</h1>
+      <h3>Please Login</h3>
       <div>
-      {/* <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          name="username"
-          onChange={handleChange}
-          value={loginForm.username}
-        />
-        <br />
-
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          onChange={handleChange}
-          value={loginForm.password}
-        />
+      <form>
+        <label>USERNAME</label>
+        <input type="text" ref={usernameRef}/>
         <br/>
-        <input type="submit"/>
-      </form> */}
+        <label>PASSWORD</label>
+        <input  type="password" ref={passwordRef}/>
+        <button onClick={onSubmit}>SUBMIT</button>
+      </form>
       </div>
     </>
   );
